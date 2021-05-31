@@ -1,4 +1,3 @@
-use std::arch::x86_64;
 use std::collections::HashMap;
 use std::marker::PhantomData;
 use std::mem;
@@ -27,8 +26,9 @@ impl<'a> Scene<'a> {
         // Set the flush zero and denormals modes from Embrees's perf. recommendations
         // https://embree.github.io/api.html#performance-recommendations
         // Though, in Rust I think we just call the below function to do both
+        #[cfg(target_arch = "x86_64")]
         unsafe {
-            x86_64::_MM_SET_FLUSH_ZERO_MODE(x86_64::_MM_FLUSH_ZERO_ON);
+            std::arch::x86_64::_MM_SET_FLUSH_ZERO_MODE(std::arch::x86_64::_MM_FLUSH_ZERO_ON);
         }
         Scene {
             handle: unsafe { rtcNewScene(device.handle) },
